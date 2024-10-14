@@ -16,26 +16,27 @@ enum OrderStatus {
 
 enum UserRole {
     USER
-    ADMININSTRATOR
+    ADMINISTRATOR
 }
 
 model User {
     id Int @id @default(autoincrement())
 
     fullName String
-    login    String @unique
-    email    String @unique
+    login    String   @unique
+    email    String   @unique
     password String
+    verified DateTime
 
     Cart             Cart?
     verificationCode VerificationCode?
     role             UserRole          @default(USER)
 
-    provider   String
-    providerId String
+    provider   String?
+    providerId String?
 
-    createdAt      DateTime
-    lastModifiedAt DateTime
+    createdAt      DateTime @default(now())
+    lastModifiedAt DateTime @updatedAt
 }
 
 model Category {
@@ -44,8 +45,8 @@ model Category {
     name     String
     products Product[]
 
-    createdAt      DateTime
-    lastModifiedAt DateTime
+    createdAt      DateTime @default(now())
+    lastModifiedAt DateTime @updatedAt
 }
 
 model Product {
@@ -60,22 +61,22 @@ model Product {
     variants  ProductVariant[]
     cartItems CartItem[]
 
-    createdAt      DateTime
-    lastModifiedAt DateTime
+    createdAt      DateTime @default(now())
+    lastModifiedAt DateTime @updatedAt
 }
 
 model ProductVariant {
     id Int @id @default(autoincrement())
 
     price Int
-    size  Int?
+    size  String?
     color String?
 
     product   Product @relation(fields: [productId], references: [id])
     productId Int
 
-    createdAt      DateTime
-    lastModifiedAt DateTime
+    createdAt      DateTime @default(now())
+    lastModifiedAt DateTime @updatedAt
 }
 
 model Cart {
@@ -91,8 +92,8 @@ model Cart {
 
     token String
 
-    createdAt      DateTime
-    lastModifiedAt DateTime
+    createdAt      DateTime @default(now())
+    lastModifiedAt DateTime @updatedAt
 }
 
 model CartItem {
@@ -106,8 +107,8 @@ model CartItem {
     product   Product @relation(fields: [productId], references: [id])
     productId Int
 
-    createdAt      DateTime
-    lastModifiedAt DateTime
+    createdAt      DateTime @default(now())
+    lastModifiedAt DateTime @updatedAt
 }
 
 model Order {
@@ -125,8 +126,8 @@ model Order {
     address  String
     comment  String
 
-    createdAt      DateTime
-    lastModifiedAt DateTime
+    createdAt      DateTime @default(now())
+    lastModifiedAt DateTime @updatedAt
 }
 
 model VerificationCode {
