@@ -15,14 +15,24 @@ const generateUniqueCategories = (count: number): Array<{ name: string }> => {
 
 async function up(): Promise<void> {
 	await prisma.user.createMany({
-		data: Array.from({ length: 10 }, () => ({
-			login: faker.internet.userName(),
-			fullName: faker.person.fullName(),
-			email: faker.internet.email(),
-			password: hashSync(faker.internet.password(), genSaltSync(10)),
-			verified: new Date(),
-			role: 'USER',
-		})),
+		data: [
+			{
+				login: 'LoginUser',
+				fullName: 'Test Testovich',
+				email: 'user01@ya.ru',
+				password: hashSync('test0101', genSaltSync(10)),
+				verified: new Date(),
+				role: 'USER',
+			},
+			{
+				login: 'LoginAdmin',
+				fullName: 'Admin Adminovish',
+				email: 'admin01@gmail.com',
+				password: hashSync('test0202', genSaltSync(10)),
+				verified: new Date(),
+				role: 'ADMINISTRATOR',
+			},
+		],
 	});
 
 	await prisma.category.createMany({
@@ -54,10 +64,34 @@ async function up(): Promise<void> {
 					}),
 		})),
 	});
+
+	await prisma.cart.createMany({
+		data: [
+			{
+				userId: 1,
+				totalAmount: 0,
+				token: '666',
+			},
+			{
+				userId: 2,
+				totalAmount: 0,
+				token: '999',
+			},
+		],
+	});
+
+	await prisma.cartItem.createMany({
+		data: Array.from({ length: 10 }, () => ({
+			cartId: faker.number.int({ min: 1, max: 2 }),
+			productId: faker.number.int({ min: 1, max: 100 }),
+			variantId: faker.number.int({ min: 1, max: 20 }),
+			quantity: faker.number.int({ min: 1, max: 5 }),
+		})),
+	});
 }
 
 async function down(): Promise<void> {
-	await prisma.$executeRaw`TRUNCATE TABLE "User", "Category", "Product", "ProductVariant" RESTART IDENTITY CASCADE`;
+	await prisma.$executeRaw`TRUNCATE TABLE "User", "Category", "Product", "ProductVariant", "Cart", "CartItem" RESTART IDENTITY CASCADE`;
 }
 
 async function main(): Promise<void> {
